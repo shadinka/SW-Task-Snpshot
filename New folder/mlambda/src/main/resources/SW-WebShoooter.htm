@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.224.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+        function callAwsLambdaFunction() {
+            let urlField = $("#url");
+            let result = $("#result");
+            let errorLabel = $("#error");
+            let loading = $("#loading");
+            errorLabel.hide();
+            urlField.hide();
+            loading.show();
+            // the input of the Lambda
+            let url = urlField.val();
+
+            let payld = '{"URL" : "' + url + '"}';
+            //logging
+            console.info("calling AWS lambda with the URL:");
+            console.info(url);
+
+            // Configure AWS SDK for JavaScript
+            AWS.config.region = 'us-west-2'; // Region
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: 'us-west-2:6447b47d-f469-4194-8ca5-1014b72cd890',});
+			
+			//Invoke Lambda
+            let lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'}); // and here
+            let pullParams = {
+                FunctionName: 'hello',
+                InvocationType: 'RequestResponse',
+                LogType: 'None',
+                Payload: payld
+            };
+
+            lambda.invoke(pullParams, function (error, data) {
+                if (error) {
+                    result.html("");
+                    errorLabel.val(error);
+                    errorLabel.show();
+                } else {
+                    result.html(`<a href=${data.Payload} target="_blank">click me to open the snapshoot</a>`);
+                }
+                urlField.show();
+                loading.hide();
+            });
+
+        }
+    </script>
+    <title>SimilarWeb Snapshotter</title>
+    <img src="http://c93fea60bb98e121740fc38ff31162a8.s3.amazonaws.com/wp-content/uploads/2015/10/similar-web-logo.png"
+         alt="Similarweb.com" style="width:150px;height:100px;">
+    <h1>Welcome To SimilarWeb Snapshooooter</h1>
+</head>
+<body>
+<h2>Please enter a website URL to take snapshot: </h2>
+<form>
+    <div class="content">
+        <input id="url" type="text" name="url" id="url-field"/>
+        <label id="loading" style="color:red;display: none">processing...</label>
+        <br/>
+    </div>
+</form>
+<h2>Click on the button below to take a snapshot of the provided website</h2>
+<h1>
+    <div id="myDiv"></div>
+</h1>
+<button id="runbtn" onclick="callAwsLambdaFunction()">Run Snapshotter</button>
+<br/>
+<br/>
+<label id="result"/>
+<label id="error" style="color:red;display: none"/>
+</body>
+
+</html>

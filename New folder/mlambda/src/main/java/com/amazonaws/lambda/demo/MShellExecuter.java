@@ -16,7 +16,7 @@ public class MShellExecuter {
 	//private static String PASSWORD ="password"; // password of the remote host
 	private static String host = "ec2-34-210-43-89.us-west-2.compute.amazonaws.com"; // remote host address
 	private static int port=22;
-	private static String AccessKey = "./Ubuntu-1.pem";
+	private static String AccessKey = "./Ubuntu-1.pem"; //refers to the file found the the Lambda uploaded package
 
 	// C:\\Users\\shadim\\Downloads\\
 	/**
@@ -34,8 +34,7 @@ public class MShellExecuter {
 			 * Create a new Jsch object
 			 * This object will execute shell commands or scripts on server
 			 */
-			JSch jsch = new JSch();  // this is your problem. this jar is not in the packaged jar.. which is why it doesn't know which class this is.
-
+			JSch jsch = new JSch();  
 			/*
 			 * Open a new session, with your username, host and port
 			 * Set the password and call connect.

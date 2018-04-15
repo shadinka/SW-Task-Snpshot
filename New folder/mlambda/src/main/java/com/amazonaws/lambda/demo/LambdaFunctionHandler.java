@@ -19,7 +19,7 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
         
         res = takeSnapshot(reqURL);
         context.getLogger().log("Run command return: " + res );
-        // TODO: implement your handler
+
         return res;
     }
 
